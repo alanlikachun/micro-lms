@@ -1,0 +1,9 @@
+# Node.js dependencies
+node_modules/
+
+# Editor/IDE specific files
+.vscode/
+
+# Operating System files
+.DS_Store
+Thumbs.db
