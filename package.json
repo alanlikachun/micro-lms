@@ -1,0 +1,8 @@
+{
+  "name": "micro-lms",
+  "version": "1.0.0",
+  "private": true,
+  "author": "Alan Li <alan.likachun@gmail.com>",
+  "license": "MIT",
+  "workspaces": []
+}
