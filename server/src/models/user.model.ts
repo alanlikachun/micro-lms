@@ -24,6 +24,7 @@ const UserSchema: Schema = new Schema(
       enum: Object.values(Role),
       default: Role.STUDENT,
     },
+    societies: [{ type: Schema.Types.ObjectId, ref: "Society" }],
   },
   { timestamps: true, versionKey: false }
 );
