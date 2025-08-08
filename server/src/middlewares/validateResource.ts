@@ -5,8 +5,6 @@ export const validateResource =
   (schema: z.ZodTypeAny) =>
   (req: Request, res: Response, next: NextFunction) => {
     try {
-      console.log(req.body, req.params, req.query);
-      
       schema.parse({
         body: req.body,
         params: req.params,
