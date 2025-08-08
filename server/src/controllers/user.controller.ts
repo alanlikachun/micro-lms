@@ -40,6 +40,22 @@ export const getUser = async (req: Request, res: Response) => {
   res.json(user);
 };
 
+export const updateUser = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const updateData = req.body;
+
+  const user = await User.findByIdAndUpdate(id, updateData, {
+    new: true,
+    runValidators: true,
+  }).select({ password: 0 });
+
+  if (!user) {
+    return res.status(404).json({ message: "User not found" });
+  }
+
+  res.status(200).json(user);
+};
+
 export const deleteUsers = async (req: Request, res: Response) => {
   const { idList } = req.body;
   const count = await User.countDocuments({ _id: { $in: idList } });
