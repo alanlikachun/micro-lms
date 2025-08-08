@@ -12,4 +12,11 @@ export const createUserSchema = z.object({
   }),
 });
 
+export const getUserSchema = z.object({
+  params: z.object({
+    id: mongoObjectIdSchema,
+  }),
+});
+
 export type CreateUserInput = z.infer<typeof createUserSchema>;
+export type GetUserByIdInput = z.infer<typeof getUserSchema>["params"];

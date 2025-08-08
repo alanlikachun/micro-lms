@@ -7,13 +7,13 @@ import {
   updateUser,
 } from "../controllers/user.controller";
 import { validateResource } from "../middlewares/validateResource";
-import { createUserSchema } from "../schemas/user.schema";
+import { createUserSchema, getUserSchema } from "../schemas/user.schema";
 
 const router = Router();
 
 router.post("/", validateResource(createUserSchema), createUser);
 router.get("/list", getUsers);
-router.get("/:id", getUser);
+router.get("/:id", validateResource(getUserSchema), getUser);
 router.patch("/:id", updateUser);
 router.delete("/", deleteUsers);
 
