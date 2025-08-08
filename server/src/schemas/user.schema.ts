@@ -31,6 +31,13 @@ export const updateUserSchema = z.object({
   }),
 });
 
+export const deleteUsersSchema = z.object({
+  body: z.object({
+    idList: z.array(mongoObjectIdSchema),
+  }),
+});
+
 export type CreateUserInput = z.infer<typeof createUserSchema>;
 export type GetUserByIdInput = z.infer<typeof getUserSchema>["params"];
 export type UpdateUserInput = z.infer<typeof updateUserSchema>;
+export type DeleteUsersInput = z.infer<typeof deleteUsersSchema>["body"];

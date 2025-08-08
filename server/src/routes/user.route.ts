@@ -9,6 +9,7 @@ import {
 import { validateResource } from "../middlewares/validateResource";
 import {
   createUserSchema,
+  deleteUsersSchema,
   getUserSchema,
   updateUserSchema,
 } from "../schemas/user.schema";
@@ -19,6 +20,6 @@ router.post("/", validateResource(createUserSchema), createUser);
 router.get("/list", getUsers);
 router.get("/:id", validateResource(getUserSchema), getUser);
 router.patch("/:id", validateResource(updateUserSchema), updateUser);
-router.delete("/", deleteUsers);
+router.delete("/", validateResource(deleteUsersSchema), deleteUsers);
 
 export default router;
