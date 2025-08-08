@@ -25,7 +25,7 @@ const UserSchema: Schema = new Schema(
       default: Role.STUDENT,
     },
   },
-  { timestamps: true }
+  { timestamps: true, versionKey: false }
 );
 
 export default mongoose.model<IUser>("User", UserSchema);
