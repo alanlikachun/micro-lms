@@ -16,14 +16,12 @@ export const createUser = async (req: Request, res: Response) => {
     role: role || Role.STUDENT,
   });
 
-  res
-    .status(201)
-    .json({
-      id: user._id,
-      name: user.name,
-      email: user.email,
-      role: user.role,
-    });
+  res.status(201).json({
+    id: user._id,
+    name: user.name,
+    email: user.email,
+    role: user.role,
+  });
 };
 
 export const getUsers = async (req: Request, res: Response) => {
@@ -40,4 +38,16 @@ export const getUser = async (req: Request, res: Response) => {
   }
 
   res.json(user);
+};
+
+export const deleteUsers = async (req: Request, res: Response) => {
+  const { idList } = req.body;
+  const count = await User.countDocuments({ _id: { $in: idList } });
+
+  if (count !== idList.length) {
+    return res.status(400).json({ message: "Not all provided IDs exist" });
+  }
+
+  await User.deleteMany({ _id: { $in: idList } });
+  res.json({ message: "Deleted" });
 };
