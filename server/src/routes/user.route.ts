@@ -11,13 +11,14 @@ import {
   createUserSchema,
   deleteUsersSchema,
   getUserSchema,
+  getUsersSchema,
   updateUserSchema,
 } from "../schemas/user.schema";
 
 const router = Router();
 
 router.post("/", validateResource(createUserSchema), createUser);
-router.get("/", getUsers);
+router.get("/", validateResource(getUsersSchema), getUsers);
 router.get("/:id", validateResource(getUserSchema), getUser);
 router.patch("/:id", validateResource(updateUserSchema), updateUser);
 router.delete("/", validateResource(deleteUsersSchema), deleteUsers);
