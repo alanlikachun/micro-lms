@@ -25,8 +25,41 @@ export const createUser = async (req: Request, res: Response) => {
 };
 
 export const getUsers = async (req: Request, res: Response) => {
-  const users = await User.find().select({ password: 0 }).lean();
-  res.json(users);
+  const { page, limit, ...filters } = req.query;
+
+  const queryConditions: Record<string, any> = {};
+  for (const key in filters) {
+    if (filters[key] !== undefined) {
+      queryConditions[key] = filters[key];
+    }
+  }
+
+  let query = User.find(queryConditions).sort({ _id: 1 });
+
+  let currentPage: number | undefined;
+  let pageSize: number | undefined;
+  let total: number | undefined;
+  let totalPages: number | undefined;
+
+  if (page && limit) {
+    currentPage = Math.max(parseInt(page as string) || 1, 1);
+    pageSize = Math.max(parseInt(limit as string) || 10, 1);
+
+    const skip = (currentPage - 1) * pageSize;
+    query = query.skip(skip).limit(pageSize);
+
+    total = await User.countDocuments(queryConditions);
+    totalPages = Math.ceil(total / pageSize);
+  }
+
+  const users = await query.select({ password: 0 }).lean();
+  res.json({
+    data: users,
+    ...(currentPage && { page: currentPage }),
+    ...(pageSize && { limit: pageSize }),
+    ...(total && { total }),
+    ...(totalPages && { totalPages }),
+  });
 };
 
 export const getUser = async (req: Request, res: Response) => {
