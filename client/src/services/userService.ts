@@ -1,3 +1,4 @@
+import type { Role } from "../types/user";
 import api from "./api";
 
 export const createUser = async (userData: {
@@ -11,8 +12,12 @@ export const createUser = async (userData: {
   return data;
 };
 
-export const getUsers = async () => {
-  const { data } = await api.get("/user");
+export const getUsers = async (filter?: {
+  page?: number;
+  limit?: number;
+  role?: Role;
+}) => {
+  const { data } = await api.get("/user", { params: filter });
   return data;
 };
 
