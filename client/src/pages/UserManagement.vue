@@ -1,5 +1,11 @@
 <template>
   <div>
+    <EditUserModal
+      :visible="isModalVisible"
+      :user="currentUser"
+      @close="closeModal"
+      @save="saveUser"
+    />
     <h1>User Management</h1>
 
     <h2>Add New User</h2>
@@ -33,6 +39,7 @@
           <th>Name</th>
           <th>Email</th>
           <th>Role</th>
+          <th>Actions</th>
         </tr>
       </thead>
       <tbody>
@@ -40,6 +47,7 @@
           <td>{{ user.name }}</td>
           <td>{{ user.email }}</td>
           <td>{{ user.role }}</td>
+          <td><button @click="openModal(user)">Edit</button></td>
         </tr>
       </tbody>
     </table>
@@ -48,14 +56,9 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
-import { createUser, getUsers } from "../services/userService";
-
-interface User {
-  _id: string;
-  name: string;
-  email: string;
-  role: string;
-}
+import { createUser, getUsers, updateUser } from "../services/userService";
+import EditUserModal from "../components/EditUserModal.vue";
+import type { User } from "../types/user";
 
 const users = ref<User[]>([]);
 const newUser = ref({
@@ -64,6 +67,8 @@ const newUser = ref({
   password: "",
   role: "",
 });
+const isModalVisible = ref(false);
+const currentUser = ref<User | null>(null);
 
 const fetchUsers = async () => {
   try {
@@ -74,7 +79,7 @@ const fetchUsers = async () => {
   }
 };
 
-async function addUser() {
+const addUser = async () => {
   if (!newUser.value.role) {
     alert("Please select a role");
     return;
@@ -87,7 +92,32 @@ async function addUser() {
   } catch (err) {
     alert("Failed to add user");
   }
-}
+};
+
+const saveUser = async (updatedUserData: User) => {
+  try {
+    const response = await updateUser(updatedUserData._id, updatedUserData);
+    const index = users.value.findIndex((u) => u._id === response._id);
+
+    if (index !== -1) {
+      users.value[index] = response;
+      closeModal();
+      alert("User updated");
+    }
+  } catch (err) {
+    alert("Failed to update user");
+  }
+};
+
+const openModal = (user: User) => {
+  currentUser.value = user;
+  isModalVisible.value = true;
+};
+
+const closeModal = () => {
+  isModalVisible.value = false;
+  currentUser.value = null;
+};
 
 onMounted(() => {
   fetchUsers();
