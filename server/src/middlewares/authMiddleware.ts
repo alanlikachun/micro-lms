@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import { config } from "../config";
+import { wrapError } from "../utils/wrapError";
 
 export interface AuthRequest extends Request {
   user?: { id: string; role: string };
@@ -14,7 +15,7 @@ export const authMiddleware = (
   const token = req.headers.authorization?.split(" ")[1];
 
   if (!token) {
-    return res.status(401).json({ message: "No token provided" });
+    return res.status(401).json(wrapError("No token provided"));
   }
 
   try {
@@ -26,18 +27,18 @@ export const authMiddleware = (
     req.user = decoded;
     next();
   } catch {
-    res.status(401).json({ message: "Invalid token" });
+    res.status(401).json(wrapError("Invalid token"));
   }
 };
 
 export const rbacMiddleware = (roles: string[]) => {
   return (req: AuthRequest, res: Response, next: NextFunction) => {
     if (!req.user) {
-      return res.status(401).json({ message: "Unauthorized" });
+      return res.status(401).json(wrapError("Unauthorized"));
     }
 
     if (!roles.includes(req.user.role)) {
-      return res.status(403).json({ message: "Forbidden" });
+      return res.status(403).json(wrapError("Forbidden"));
     }
 
     next();

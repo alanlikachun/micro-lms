@@ -3,6 +3,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import User from "../models/user.model";
 import { config } from "../config";
+import { wrapError } from "../utils/wrapError";
 
 export const login = async (req: Request, res: Response) => {
   try {
@@ -10,13 +11,13 @@ export const login = async (req: Request, res: Response) => {
     const user = await User.findOne({ email });
 
     if (!user) {
-      return res.status(401).json({ message: "Invalid email or password" });
+      return res.status(401).json(wrapError("Invalid email or password"));
     }
 
     const validPassword = await bcrypt.compare(password, user.password);
 
     if (!validPassword) {
-      return res.status(401).json({ message: "Invalid email or password" });
+      return res.status(401).json(wrapError("Invalid email or password"));
     }
 
     const token = jwt.sign(
