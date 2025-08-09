@@ -5,6 +5,7 @@
   "author": "Alan Li <alan.likachun@gmail.com>",
   "license": "MIT",
   "workspaces": [
+    "client",
     "server"
   ]
 }
