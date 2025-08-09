@@ -17,7 +17,7 @@ import {
 const router = Router();
 
 router.post("/", validateResource(createUserSchema), createUser);
-router.get("/list", getUsers);
+router.get("/", getUsers);
 router.get("/:id", validateResource(getUserSchema), getUser);
 router.patch("/:id", validateResource(updateUserSchema), updateUser);
 router.delete("/", validateResource(deleteUsersSchema), deleteUsers);
