@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import Society from "../models/society.model";
+import User from "../models/user.model";
 
 export const createSociety = async (req: Request, res: Response) => {
   const society = await Society.create({
@@ -17,21 +18,34 @@ export const getSocieties = async (req: Request, res: Response) => {
 };
 
 export const getSociety = async (req: Request, res: Response) => {
-  const society = await Society.findById(req.params.id).populate("name");
+  const society = await Society.findById(req.params.id)
+    .populate("managedBy", "name")
+    .lean();
 
   if (!society) {
-    return res.status(404).json({ error: "Society not found" });
+    return res.status(404).json({ message: "Society not found" });
   }
   res.json(society);
 };
 
 export const updateSociety = async (req: Request, res: Response) => {
-  const updated = await Society.findByIdAndUpdate(req.params.id, req.body, {
+  const { id } = req.params;
+  const managedBy = req.body.managedBy;
+
+  const count = await User.countDocuments({ _id: { $in: managedBy } });
+
+  if (count !== managedBy.length) {
+    return res.status(404).json({ message: "Managed users not found" });
+  }
+
+  const updated = await Society.findByIdAndUpdate(id, req.body, {
     new: true,
-  });
+  })
+    .populate("managedBy", "name")
+    .lean();
 
   if (!updated) {
-    return res.status(404).json({ error: "Society not found" });
+    return res.status(404).json({ message: "Society not found" });
   }
 
   res.json(updated);
@@ -42,7 +56,7 @@ export const deleteSocieties = async (req: Request, res: Response) => {
   const count = await Society.countDocuments({ _id: { $in: idList } });
 
   if (count !== idList.length) {
-    return res.status(404).json({ error: "Society not found" });
+    return res.status(404).json({ message: "Society not found" });
   }
 
   await Society.deleteMany({ _id: { $in: idList } });
