@@ -37,12 +37,14 @@ export const updateSociety = async (req: Request, res: Response) => {
   res.json(updated);
 };
 
-export const deleteSociety = async (req: Request, res: Response) => {
-  const deleted = await Society.findByIdAndDelete(req.params.id);
+export const deleteSocieties = async (req: Request, res: Response) => {
+  const { idList } = req.body;
+  const count = await Society.countDocuments({ _id: { $in: idList } });
 
-  if (!deleted) {
+  if (count !== idList.length) {
     return res.status(404).json({ error: "Society not found" });
   }
 
+  await Society.deleteMany({ _id: { $in: idList } });
   res.json({ message: "Society deleted" });
 };

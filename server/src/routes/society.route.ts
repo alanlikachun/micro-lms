@@ -4,7 +4,7 @@ import {
   getSocieties,
   getSociety,
   updateSociety,
-  deleteSociety,
+  deleteSocieties,
 } from "../controllers/society.controller";
 
 const router = express.Router();
@@ -13,6 +13,6 @@ router.post("/", createSociety);
 router.get("/", getSocieties);
 router.get("/:id", getSociety);
 router.patch("/:id", updateSociety);
-router.delete("/:id", deleteSociety);
+router.delete("/", deleteSocieties);
 
 export default router;
