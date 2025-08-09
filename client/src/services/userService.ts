@@ -12,7 +12,7 @@ export const createUser = async (userData: {
 };
 
 export const getUsers = async () => {
-  const { data } = await api.get("/user/list");
+  const { data } = await api.get("/user");
   return data;
 };
 
