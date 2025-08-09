@@ -2,10 +2,12 @@ import { createRouter, createWebHistory } from "vue-router";
 import HelloWorld from "../pages/HelloWorld.vue";
 import PageNotFound from "../pages/PageNotFound.vue";
 import UserManagement from "../pages/UserManagement.vue";
+import SocietyManagement from "../pages/SocietyManagement.vue";
 
 const routes = [
   { path: "/", component: HelloWorld },
   { path: "/user-management", component: UserManagement },
+  { path: "/society-management", component: SocietyManagement },
   { path: "/:pathMatch(.*)*", component: PageNotFound },
 ];
 
