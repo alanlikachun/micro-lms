@@ -12,6 +12,17 @@ export const createUserSchema = z.object({
   }),
 });
 
+export const getUsersSchema = z.object({
+  query: z.object({
+    page: z.string().optional(),
+    limit: z.string().optional(),
+    name: z.string().optional(),
+    email: z.string().optional(),
+    role: z.enum(Object.values(Role)).optional(),
+    societies: z.array(mongoObjectIdSchema).optional(),
+  }),
+});
+
 export const getUserSchema = z.object({
   params: z.object({
     id: mongoObjectIdSchema,
