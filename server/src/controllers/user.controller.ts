@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import User, { Role } from "../models/user.model";
+import bcrypt from "bcrypt";
 
 export const createUser = async (req: Request, res: Response) => {
   const { name, email, password, role } = req.body;
@@ -9,10 +10,12 @@ export const createUser = async (req: Request, res: Response) => {
     return res.status(409).json({ message: "User exists" });
   }
 
+  const hashedPassword = await bcrypt.hash(password, 10);
+
   const user = await User.create({
     name,
     email,
-    password: password,
+    password: hashedPassword,
     role: role || Role.STUDENT,
   });
 
