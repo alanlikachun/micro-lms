@@ -17,7 +17,9 @@ export const getSocieties = async (req: Request, res: Response) => {
 };
 
 export const getSociety = async (req: Request, res: Response) => {
-  const society = await Society.findById(req.params.id).populate("name");
+  const society = await Society.findById(req.params.id)
+    .populate("managedBy", "name")
+    .lean();
 
   if (!society) {
     return res.status(404).json({ error: "Society not found" });
