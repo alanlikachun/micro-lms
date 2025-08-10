@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router";
 import PageNotFound from "../pages/PageNotFound.vue";
 import UserManagement from "../pages/UserManagement.vue";
+import SocietyManagement from "../pages/SocietyManagement.vue";
 import Login from "../pages/Login.vue";
 import { useAuthStore } from "../stores/auth";
 import { Role } from "../types/user";
@@ -9,6 +10,8 @@ const routes = [
   { path: "/", component: Login },
   { path: "/login", component: Login },
   { path: "/admin/user-management", component: UserManagement },
+  { path: "/admin/society-management", component: SocietyManagement },
+  { path: "/teacher/user-management", component: UserManagement },
   { path: "/:pathMatch(.*)*", component: PageNotFound },
 ];
 
@@ -29,7 +32,7 @@ router.beforeEach((to, from, next) => {
       case Role.ADMIN:
         return next("/admin/user-management");
       case Role.TEACHER:
-        return next("/teacher");
+        return next("/teacher/user-management");
       case Role.STUDENT:
         return next("/student");
       default:

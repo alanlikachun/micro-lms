@@ -3,10 +3,11 @@ export enum Role {
   TEACHER = "TEACHER",
   STUDENT = "STUDENT",
 }
-
-export interface User {
+interface User {
   _id: string;
   name: string;
   email: string;
   role: "ADMIN" | "TEACHER" | "STUDENT";
 }
+
+export type { User };
