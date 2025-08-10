@@ -1,6 +1,8 @@
 import { Request, Response } from "express";
 import Society from "../models/society.model";
 import User from "../models/user.model";
+import { wrap } from "module";
+import { wrapError } from "../utils/wrapError";
 
 export const createSociety = async (req: Request, res: Response) => {
   const society = await Society.create({
@@ -23,7 +25,7 @@ export const getSociety = async (req: Request, res: Response) => {
     .lean();
 
   if (!society) {
-    return res.status(404).json({ message: "Society not found" });
+    return res.status(404).json(wrapError("Society not found"));
   }
   res.json(society);
 };
@@ -35,7 +37,7 @@ export const updateSociety = async (req: Request, res: Response) => {
   const count = await User.countDocuments({ _id: { $in: managedBy } });
 
   if (count !== managedBy.length) {
-    return res.status(404).json({ message: "Managed users not found" });
+    return res.status(404).json(wrapError("Managed user not found"));
   }
 
   const updated = await Society.findByIdAndUpdate(id, req.body, {
@@ -45,7 +47,7 @@ export const updateSociety = async (req: Request, res: Response) => {
     .lean();
 
   if (!updated) {
-    return res.status(404).json({ message: "Society not found" });
+    return res.status(404).json(wrapError("Society not found"));
   }
 
   res.json(updated);
@@ -56,7 +58,7 @@ export const deleteSocieties = async (req: Request, res: Response) => {
   const count = await Society.countDocuments({ _id: { $in: idList } });
 
   if (count !== idList.length) {
-    return res.status(404).json({ message: "Society not found" });
+    return res.status(404).json(wrapError("Society not found"));
   }
 
   await Society.deleteMany({ _id: { $in: idList } });

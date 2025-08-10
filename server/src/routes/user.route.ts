@@ -14,13 +14,27 @@ import {
   getUsersSchema,
   updateUserSchema,
 } from "../schemas/user.schema";
+import { Role } from "../models/user.model";
+import { authMiddleware, rbacMiddleware } from "../middlewares/authMiddleware";
 
 const router = Router();
 
-router.post("/", validateResource(createUserSchema), createUser);
+router.post(
+  "/",
+  authMiddleware,
+  rbacMiddleware([Role.ADMIN]),
+  validateResource(createUserSchema),
+  createUser
+);
 router.get("/", validateResource(getUsersSchema), getUsers);
 router.get("/:id", validateResource(getUserSchema), getUser);
 router.patch("/:id", validateResource(updateUserSchema), updateUser);
-router.delete("/", validateResource(deleteUsersSchema), deleteUsers);
+router.delete(
+  "/",
+  authMiddleware,
+  rbacMiddleware([Role.ADMIN]),
+  validateResource(deleteUsersSchema),
+  deleteUsers
+);
 
 export default router;
