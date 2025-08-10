@@ -3,19 +3,24 @@
     <div class="modal-content">
       <h2>Edit User</h2>
       <form @submit.prevent="saveUser">
-        <div>
-          <label>Name:</label>
-          <input v-model="form.name" type="text" required />
+        <div class="form-row">
+          <label class="form-label">Name:</label>
+          <input class="form-input" v-model="form.name" type="text" required />
         </div>
 
-        <div>
-          <label>Email:</label>
-          <input v-model="form.email" type="email" required />
+        <div class="form-row">
+          <label class="form-label">Email:</label>
+          <input
+            class="form-input"
+            v-model="form.email"
+            type="email"
+            required
+          />
         </div>
 
-        <div>
-          <label>Role:</label>
-          <select v-model="form.role">
+        <div class="form-row">
+          <label class="form-label">Role:</label>
+          <select class="form-input" v-model="form.role">
             <option value="ADMIN">Admin</option>
             <option value="TEACHER">Teacher</option>
             <option value="STUDENT">Student</option>
@@ -96,5 +101,17 @@ const close = () => {
 }
 .actions button {
   margin-left: 10px;
+}
+.form-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+.form-label {
+  flex: 1 0;
+  text-align: left;
+}
+.form-input {
+  flex: 2 1 0;
 }
 </style>
