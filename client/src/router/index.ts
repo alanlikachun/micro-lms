@@ -9,7 +9,6 @@ const routes = [
   { path: "/", component: Login },
   { path: "/login", component: Login },
   { path: "/admin/user-management", component: UserManagement },
-  { path: "/admin/society-management", component: SocietyManagement },
   { path: "/:pathMatch(.*)*", component: PageNotFound },
 ];
 
