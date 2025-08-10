@@ -8,30 +8,33 @@
     />
     <h1>User Management</h1>
 
-    <h2>Add New User</h2>
-    <form class="add-user-form" @submit.prevent="addUser">
-      <input v-model="newUser.name" placeholder="Name" required />
-      <input
-        v-model="newUser.email"
-        placeholder="Email"
-        type="email"
-        required
-      />
-      <input
-        v-model="newUser.password"
-        placeholder="Password"
-        type="password"
-        required
-      />
-      <select v-model="newUser.role" required>
-        <option disabled value="">Select role</option>
-        <option value="ADMIN">Admin</option>
-        <option value="TEACHER">Teacher</option>
-        <option value="STUDENT">Student</option>
-      </select>
-      <button type="submit">Add User</button>
-    </form>
-
+    <div
+      v-if="authStore.isAuthenticated && authStore.user?.role === Role.ADMIN"
+    >
+      <h2>Add New User</h2>
+      <form class="add-user-form" @submit.prevent="addUser">
+        <input v-model="newUser.name" placeholder="Name" required />
+        <input
+          v-model="newUser.email"
+          placeholder="Email"
+          type="email"
+          required
+        />
+        <input
+          v-model="newUser.password"
+          placeholder="Password"
+          type="password"
+          required
+        />
+        <select v-model="newUser.role" required>
+          <option disabled value="">Select role</option>
+          <option value="ADMIN">Admin</option>
+          <option value="TEACHER">Teacher</option>
+          <option value="STUDENT">Student</option>
+        </select>
+        <button type="submit">Add User</button>
+      </form>
+    </div>
     <h2>Existing Users</h2>
     <table class="user-table" border="1" cellspacing="0" cellpadding="6">
       <thead>
@@ -49,7 +52,12 @@
           <td>{{ user.role }}</td>
           <td class="actions">
             <button @click="openModal(user)">Edit</button
-            ><button @click="deleteUser(user._id)">Delete</button>
+            ><button
+              v-if="authStore.user?.role === Role.ADMIN"
+              @click="deleteUser(user._id)"
+            >
+              Delete
+            </button>
           </td>
         </tr>
       </tbody>
@@ -67,6 +75,10 @@ import {
 } from "../services/userService";
 import EditUserModal from "../components/EditUserModal.vue";
 import type { User } from "../types/user";
+import { Role } from "../types/user";
+import { useAuthStore } from "../stores/auth";
+
+const authStore = useAuthStore();
 
 const users = ref<User[]>([]);
 const newUser = ref({

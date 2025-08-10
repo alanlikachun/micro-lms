@@ -41,7 +41,7 @@ const submitLogin = async () => {
     if (authStore.user?.role === Role.ADMIN) {
       router.push("/admin/user-management");
     } else if (authStore.user?.role === Role.TEACHER) {
-      router.push("/teacher");
+      router.push("/teacher/user-management");
     } else {
       router.push("/student");
     }
