@@ -47,7 +47,10 @@
           <td>{{ user.name }}</td>
           <td>{{ user.email }}</td>
           <td>{{ user.role }}</td>
-          <td><button @click="openModal(user)">Edit</button></td>
+          <td class="actions">
+            <button @click="openModal(user)">Edit</button
+            ><button @click="deleteUser(user._id)">Delete</button>
+          </td>
         </tr>
       </tbody>
     </table>
@@ -56,7 +59,12 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
-import { createUser, getUsers, updateUser } from "../services/userService";
+import {
+  createUser,
+  deleteUsers,
+  getUsers,
+  updateUser,
+} from "../services/userService";
 import EditUserModal from "../components/EditUserModal.vue";
 import type { User } from "../types/user";
 
@@ -109,6 +117,17 @@ const saveUser = async (updatedUserData: User) => {
   }
 };
 
+const deleteUser = async (id: string) => {
+  if (confirm("Are you sure you want to delete this user?")) {
+    try {
+      await deleteUsers([id]);
+      users.value = users.value.filter((user) => user._id !== id);
+    } catch (err) {
+      alert("Failed to delete user");
+    }
+  }
+};
+
 const openModal = (user: User) => {
   currentUser.value = user;
   isModalVisible.value = true;
@@ -133,5 +152,11 @@ onMounted(() => {
   display: flex;
   gap: 10px;
   margin-bottom: 20px;
+}
+
+.actions {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
 }
 </style>
