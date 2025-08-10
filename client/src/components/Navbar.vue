@@ -4,18 +4,28 @@
       <RouterLink to="/" class="logo">Micro-LMS</RouterLink>
       <RouterLink
         v-if="authStore.isAuthenticated && authStore.user?.role === Role.ADMIN"
-        to="/user-management"
+        to="/admin/user-management"
       >
-        Admin
+        User
       </RouterLink>
       <RouterLink
-        v-if="authStore.isAuthenticated && authStore.user?.role === Role.TEACHER"
+        v-if="authStore.isAuthenticated && authStore.user?.role === Role.ADMIN"
+        to="/admin/society-management"
+      >
+        Society
+      </RouterLink>
+      <RouterLink
+        v-if="
+          authStore.isAuthenticated && authStore.user?.role === Role.TEACHER
+        "
         to="/teacher"
       >
         Teacher
       </RouterLink>
       <RouterLink
-        v-if="authStore.isAuthenticated && authStore.user?.role === Role.STUDENT"
+        v-if="
+          authStore.isAuthenticated && authStore.user?.role === Role.STUDENT
+        "
         to="/student"
       >
         Student
@@ -40,7 +50,6 @@ import { Role } from "../types/user";
 const authStore = useAuthStore();
 const router = useRouter();
 console.log(authStore.isAuthenticated);
-
 
 const logout = () => {
   authStore.logout();

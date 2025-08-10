@@ -39,7 +39,7 @@ const submitLogin = async () => {
     await authStore.login(email.value, password.value);
 
     if (authStore.user?.role === Role.ADMIN) {
-      router.push("/user-management");
+      router.push("/admin/user-management");
     } else if (authStore.user?.role === Role.TEACHER) {
       router.push("/teacher");
     } else {
