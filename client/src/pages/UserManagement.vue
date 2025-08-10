@@ -73,7 +73,7 @@ const currentUser = ref<User | null>(null);
 const fetchUsers = async () => {
   try {
     const response = await getUsers();
-    users.value = response;
+    users.value = response.data;
   } catch (err) {
     alert("Failed to fetch users");
   }
