@@ -79,8 +79,14 @@ const isModalVisible = ref(false);
 const currentUser = ref<User | null>(null);
 
 const fetchUsers = async () => {
+  let query;
+
+  if (authStore.user?.role === Role.TEACHER) {
+    query = { role: Role.STUDENT };
+  }
+
   try {
-    const response = await getUsers();
+    const response = await getUsers(query);
     users.value = response.data;
   } catch (err) {
     alert("Failed to fetch users");
@@ -93,10 +99,10 @@ const addUser = async () => {
     return;
   }
   try {
-    const createdUser = await createUser(newUser.value);
+    await createUser(newUser.value);
     alert("User added");
-    users.value.push(createdUser);
     newUser.value = { name: "", email: "", password: "", role: "" };
+    fetchUsers();
   } catch (err) {
     alert("Failed to add user");
   }
@@ -104,14 +110,12 @@ const addUser = async () => {
 
 const saveUser = async (updatedUserData: User) => {
   try {
-    const response = await updateUser(updatedUserData._id, updatedUserData);
-    const index = users.value.findIndex((u) => u._id === response._id);
+    console.log("Saving user:", updatedUserData);
 
-    if (index !== -1) {
-      users.value[index] = response;
-      closeModal();
-      alert("User updated");
-    }
+    await updateUser(updatedUserData._id, updatedUserData);
+    alert("User updated");
+    closeModal();
+    fetchUsers();
   } catch (err) {
     alert("Failed to update user");
   }
