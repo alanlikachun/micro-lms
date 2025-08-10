@@ -30,9 +30,19 @@ export const deleteSocietiesSchema = z.object({
   }),
 });
 
+export const addMembersSchema = z.object({
+  params: z.object({
+    id: mongoObjectIdSchema,
+  }),
+  body: z.object({
+    memberIds: z.array(mongoObjectIdSchema),
+  }),
+});
+
 export type CreateSocietyInput = z.infer<typeof createSocietySchema>;
 export type GetSocietyByIdInput = z.infer<typeof getSocietySchema>["params"];
 export type UpdateSocietyInput = z.infer<typeof updateSocietySchema>;
 export type DeleteSocietiesInput = z.infer<
   typeof deleteSocietiesSchema
 >["body"];
+export type AddMembersInput = z.infer<typeof addMembersSchema>;

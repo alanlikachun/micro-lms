@@ -14,7 +14,10 @@ export const createSociety = async (req: Request, res: Response) => {
 };
 
 export const getSocieties = async (req: Request, res: Response) => {
-  const societies = await Society.find().populate("managedBy", "name").lean();
+  const societies = await Society.find()
+    .populate("managedBy", "name")
+    .populate("members", "name")
+    .lean();
 
   res.json(societies);
 };
@@ -22,6 +25,7 @@ export const getSocieties = async (req: Request, res: Response) => {
 export const getSociety = async (req: Request, res: Response) => {
   const society = await Society.findById(req.params.id)
     .populate("managedBy", "name")
+    .populate("members", "name")
     .lean();
 
   if (!society) {
@@ -44,6 +48,7 @@ export const updateSociety = async (req: Request, res: Response) => {
     new: true,
   })
     .populate("managedBy", "name")
+    .populate("members", "name")
     .lean();
 
   if (!updated) {
@@ -63,4 +68,47 @@ export const deleteSocieties = async (req: Request, res: Response) => {
 
   await Society.deleteMany({ _id: { $in: idList } });
   res.json({ message: "Society deleted" });
+};
+
+export const addMembers = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const { memberIds } = req.body;
+
+  if (!Array.isArray(memberIds) || memberIds.length === 0) {
+    return res
+      .status(400)
+      .json(wrapError("memberIds must be a non-empty array"));
+  }
+
+  const society = await Society.findById(id);
+  if (!society) {
+    return res.status(404).json(wrapError("Society not found"));
+  }
+
+  const users = await User.find({ _id: { $in: memberIds } });
+  const validIds = users.map((u) => u._id.toString());
+  const notFound = memberIds.filter((id) => !validIds.includes(id));
+
+  if (notFound.length > 0) {
+    return res
+      .status(404)
+      .json(wrapError(`Users not found: ${notFound.join(", ")}`));
+  }
+
+  const newMembers = memberIds.filter((id) => !society.members.includes(id));
+  society.members.push(...newMembers);
+  await society.save();
+
+  await User.updateMany(
+    { _id: { $in: newMembers } },
+    { $addToSet: { societies: society._id } }
+  );
+
+  res.json({
+    message: "Members added successfully",
+    added: newMembers,
+    alreadyMembers: memberIds.filter(
+      (id) => society.members.includes(id) && !newMembers.includes(id)
+    ),
+  });
 };
