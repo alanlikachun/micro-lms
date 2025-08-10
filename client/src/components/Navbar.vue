@@ -18,9 +18,9 @@
         v-if="
           authStore.isAuthenticated && authStore.user?.role === Role.TEACHER
         "
-        to="/teacher"
+        to="/teacher/user-management"
       >
-        Teacher
+        User
       </RouterLink>
       <RouterLink
         v-if="
