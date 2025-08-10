@@ -30,6 +30,11 @@ router.get("/", getSocieties);
 router.get("/:id", validateResource(getSocietySchema), getSociety);
 router.patch("/:id", validateResource(updateSocietySchema), updateSociety);
 router.delete("/", validateResource(deleteSocietiesSchema), deleteSocieties);
-router.post("/add-members/:id", validateResource(addMembersSchema), addMembers);
+router.post(
+  "/add-members/:id",
+  rbacMiddleware([Role.ADMIN, Role.TEACHER]),
+  validateResource(addMembersSchema),
+  addMembers
+);
 
 export default router;
